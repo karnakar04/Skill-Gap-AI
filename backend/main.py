@@ -10,7 +10,8 @@ import io
 import os
 import json
 from dotenv import load_dotenv
-from mistralai import Mistral
+from mistralai import MistralClient
+from mistralai.models.chat_completion import ChatMessage
 
 # ---------------------------
 # LOAD ENV
@@ -35,7 +36,7 @@ print("API KEY:", MISTRAL_API_KEY)
 # ---------------------------
 # MISTRAL CLIENT
 # ---------------------------
-client_ai = Mistral(api_key=MISTRAL_API_KEY)
+client = MistralClient(api_key=MISTRAL_API_KEY)
 
 # ---------------------------
 # APP INIT
