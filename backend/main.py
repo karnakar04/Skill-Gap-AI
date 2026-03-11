@@ -8,8 +8,8 @@ import os
 import json
 import re
 from dotenv import load_dotenv
+from mistralai import Mistral
 
-import requests
 # ---------------------------
 # LOAD ENV
 # ---------------------------
@@ -33,7 +33,7 @@ print("API KEY:", MISTRAL_API_KEY)
 # ---------------------------
 # MISTRAL CLIENT
 # ---------------------------
-
+client_ai = Mistral(api_key=MISTRAL_API_KEY)
 
 # ---------------------------
 # APP INIT
@@ -82,7 +82,7 @@ You are an AI Resume Evaluator.
 
 Target Role: {target_role}
 
-Return ONLY JSON:
+Return ONLY PURE JSON (no ```json no explanations):
 
 {{
 "resume_accuracy": number,
@@ -97,26 +97,14 @@ Resume:
 {resume_text}
 """
 
-    url = "https://api.mistral.ai/v1/chat/completions"
+    response = client_ai.chat.complete(
+        model="mistral-small-latest",
+        messages=[{"role": "user", "content": prompt}]
+    )
 
-    headers = {
-        "Authorization": f"Bearer {MISTRAL_API_KEY}",
-        "Content-Type": "application/json"
-    }
+    content = response.choices[0].message.content
 
-    payload = {
-        "model": "mistral-small-latest",
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
-
-    response = requests.post(url, headers=headers, json=payload)
-
-    data = response.json()
-
-    content = data["choices"][0]["message"]["content"]
-
+    # 🔥 remove ```json formatting if AI adds it
     cleaned = re.sub(r"```json|```", "", content).strip()
 
     try:
