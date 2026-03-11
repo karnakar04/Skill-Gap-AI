@@ -1,17 +1,14 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 from datetime import datetime
 import PyPDF2
 import io
 import os
 import json
+import re
 from dotenv import load_dotenv
-from mistralai import MistralClient
-from mistralai.models.chat_completion import ChatMessage
+from mistralai import Mistral
 
 # ---------------------------
 # LOAD ENV
@@ -36,7 +33,7 @@ print("API KEY:", MISTRAL_API_KEY)
 # ---------------------------
 # MISTRAL CLIENT
 # ---------------------------
-client = MistralClient(api_key=MISTRAL_API_KEY)
+client_ai = Mistral(api_key=MISTRAL_API_KEY)
 
 # ---------------------------
 # APP INIT
